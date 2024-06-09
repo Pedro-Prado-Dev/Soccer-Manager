@@ -1,5 +1,6 @@
-# routes.py
-from flask import Blueprint, jsonify, request, render_template, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for
+from bson.objectid import ObjectId
+from app.models import Player, Equipment, Staff
 from app import mongo
 
 main = Blueprint('main', __name__)
@@ -8,51 +9,123 @@ main = Blueprint('main', __name__)
 def index():
     return render_template('index.html')
 
+# Players routes
 @main.route('/players', methods=['GET'])
 def get_players():
-    players = mongo.db.players.find()
+    players = list(mongo.db.players.find())
     return render_template('players.html', players=players)
 
-@main.route('/add_player', methods=['GET', 'POST'])
+@main.route('/players/add', methods=['GET', 'POST'])
 def add_player():
     if request.method == 'POST':
-        data = {
-            'name': request.form['name'],
-            'position': request.form['position'],
-            'number': request.form['number']
-        }
-        mongo.db.players.insert_one(data)
+        name = request.form['name']
+        position = request.form['position']
+        number = int(request.form['number'])
+        player = Player(name, position, number)
+        player.save()
         return redirect(url_for('main.get_players'))
     return render_template('add_player.html')
 
+@main.route('/edit_player/<player_id>', methods=['GET', 'POST'])
+def edit_player(player_id):
+    if request.method == 'GET':
+        player = mongo.db.players.find_one_or_404({'_id': ObjectId(player_id)})
+        equipment = list(mongo.db.equipment.find())
+        return render_template('edit_player.html', player=player, equipment=equipment)
+    elif request.method == 'POST':
+        name = request.form['name']
+        position = request.form['position']
+        number = request.form['number']
+        equipment = request.form.getlist('equipment[]')
+        
+        mongo.db.players.update_one(
+            {'_id': ObjectId(player_id)},
+            {'$set': {
+                'name': name,
+                'position': position,
+                'number': number,
+                'equipment': equipment
+            }}
+        )
+        return redirect(url_for('main.get_players'))
+
+@main.route('/players/delete/<string:player_id>', methods=['POST'])
+def delete_player(player_id):
+    mongo.db.players.delete_one({'_id': ObjectId(player_id)})
+    return redirect(url_for('main.get_players'))
+
+# Equipment routes
+@main.route('/equipment', methods=['GET'])
+def get_equipment():
+    equipment = Equipment.get_all()
+    return render_template('equipment.html', equipment=equipment)
+
+@main.route('/equipment/add', methods=['GET', 'POST'])
+def add_equipment():
+    if request.method == 'POST':
+        name = request.form['name']
+        quantity = int(request.form['quantity'])
+        equipment = Equipment(name, quantity)
+        equipment.save()
+        return redirect(url_for('main.get_equipment'))
+    return render_template('add_equipment.html')
+
+
+@main.route('/equipment/edit/<string:equipment_id>', methods=['GET', 'POST'])
+def edit_equipment(equipment_id):
+    equipment = mongo.db.equipment.find_one_or_404({'_id': ObjectId(equipment_id)})
+    
+    if request.method == 'POST':
+        name = request.form['name']
+        quantity = int(request.form['quantity'])
+        
+        mongo.db.equipment.update_one(
+            {'_id': ObjectId(equipment_id)},
+            {'$set': {'name': name, 'quantity': quantity}})
+        
+        return redirect(url_for('main.get_equipment'))
+    
+    return render_template('edit_equipment.html', equipment=equipment)
+
+@main.route('/equipment/delete/<string:equipment_id>', methods=['POST'])
+def delete_equipment(equipment_id):
+    mongo.db.equipment.delete_one({'_id': ObjectId(equipment_id)})
+    return redirect(url_for('main.get_equipment'))
+
+
+
+# Staff routes
 @main.route('/staff', methods=['GET'])
 def get_staff():
-    staff = mongo.db.staff.find()
+    staff = Staff.get_all()
     return render_template('staff.html', staff=staff)
 
-@main.route('/add_staff', methods=['GET', 'POST'])
+@main.route('/staff/add', methods=['GET', 'POST'])
 def add_staff():
     if request.method == 'POST':
-        data = {
-            'name': request.form['name'],
-            'role': request.form['role']
-        }
-        mongo.db.staff.insert_one(data)
+        name = request.form['name']
+        role = request.form['role']
+        staff = Staff(name, role)
+        staff.save()
         return redirect(url_for('main.get_staff'))
     return render_template('add_staff.html')
 
-@main.route('/equipment', methods=['GET'])
-def get_equipment():
-    equipment = mongo.db.equipment.find()
-    return render_template('equipment.html', equipment=equipment)
+@main.route('/staff/delete/<string:staff_id>', methods=['POST'])
+def delete_staff(staff_id):
+    Staff.delete(staff_id)
+    return redirect(url_for('main.get_staff'))
 
-@main.route('/add_equipment', methods=['GET', 'POST'])
-def add_equipment():
+
+@main.route('/staff/edit/<string:staff_id>', methods=['GET', 'POST'])
+def edit_staff(staff_id):
+    staff = Staff.get_by_id(staff_id)
+    
     if request.method == 'POST':
-        data = {
-            'name': request.form['name'],
-            'quantity': request.form['quantity']
-        }
-        mongo.db.equipment.insert_one(data)
-        return redirect(url_for('main.get_equipment'))
-    return render_template('add_equipment.html')
+        name = request.form['name']
+        role = request.form['role']
+        
+        Staff.update(staff_id, name, role)
+        
+        return redirect(url_for('main.get_staff'))
+    
+    return render_template('edit_staff.html', staff=staff)
