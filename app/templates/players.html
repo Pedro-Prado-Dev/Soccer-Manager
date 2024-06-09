@@ -9,6 +9,7 @@
             <th>Name</th>
             <th>Position</th>
             <th>Number</th>
+            <th>Equipment</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -18,6 +19,7 @@
             <td>{{ player.name }}</td>
             <td>{{ player.position }}</td>
             <td>{{ player.number }}</td>
+            <td>{{ player.equipment_name }}</td>
             <td>
                 <a href="{{ url_for('main.edit_player', player_id=player._id) }}" class="btn btn-sm btn-primary">Edit</a>
                 <form action="{{ url_for('main.delete_player', player_id=player._id) }}" method="post" style="display: inline;">
