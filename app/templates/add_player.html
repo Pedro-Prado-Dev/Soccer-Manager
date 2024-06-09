@@ -1,19 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Add Player</h1>
-<form action="/add_player" method="post">
+<form action="/players/add" method="post">
     <div class="form-group">
-        <label for="name">Name</label>
-        <input type="text" class="form-control" id="name" name="name" required>
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name">
     </div>
     <div class="form-group">
-        <label for="position">Position</label>
-        <input type="text" class="form-control" id="position" name="position" required>
+        <label for="position">Position:</label>
+        <input type="text" class="form-control" id="position" name="position">
     </div>
     <div class="form-group">
-        <label for="number">Number</label>
-        <input type="number" class="form-control" id="number" name="number" required>
+        <label for="number">Number:</label>
+        <input type="text" class="form-control" id="number" name="number">
     </div>
-    <button type="submit" class="btn btn-primary">Add Player</button>
+    <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 {% endblock %}

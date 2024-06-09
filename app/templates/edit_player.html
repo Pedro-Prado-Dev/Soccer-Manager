@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Edit Player</h1>
+<form action="{{ url_for('main.edit_player', player_id=player._id) }}" method="post">
+    <div class="form-group">
+        <label for="name">Name:</label>
+        <input type="text" class="form-control" id="name" name="name" value="{{ player.name }}" required>
+    </div>
+    <div class="form-group">
+        <label for="position">Position:</label>
+        <input type="text" class="form-control" id="position" name="position" value="{{ player.position }}" required>
+    </div>
+    <div class="form-group">
+        <label for="number">Number:</label>
+        <input type="number" class="form-control" id="number" name="number" value="{{ player.number }}" required>
+    </div>
+    <div class="form-group">
+        <label for="equipment">Equipment:</label>
+        <select id="equipment" name="equipment[]" multiple class="form-control">
+            {% for item in equipment %}
+                {% if item._id in player.equipment %}
+                    <option value="{{ item._id }}" selected>{{ item.name }}</option>
+                {% else %}
+                    <option value="{{ item._id }}">{{ item.name }}</option>
+                {% endif %}
+            {% endfor %}
+        </select>
+    </div>
+    <button type="submit" class="btn btn-primary">Update Player</button>
+</form>
+{% endblock %}
