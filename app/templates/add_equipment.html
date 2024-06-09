@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Add Equipment</h1>
+<form action="/add_equipment" method="post">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" required>
+    </div>
+    <div class="form-group">
+        <label for="quantity">Quantity</label>
+        <input type="number" class="form-control" id="quantity" name="quantity" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Add Equipment</button>
+</form>
+{% endblock %}

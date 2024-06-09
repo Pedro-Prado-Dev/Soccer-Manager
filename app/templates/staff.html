@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Staff</h1>
+<a class="btn btn-primary" href="/add_staff">Add Staff</a>
+<a class="btn btn-secondary" href="/">Back to Home</a>
+<ul class="list-group">
+    {% for member in staff %}
+    <li class="list-group-item">
+        {{ member.name }} - {{ member.role }}
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
