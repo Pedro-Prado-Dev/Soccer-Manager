@@ -61,3 +61,5 @@ To run the application locally, follow these steps:
 
 ## Class Diagram
 - [Miro Class Diagram](https://miro.com/welcomeonboard/VHpPN1hZYjVZWE90eDlpVUREQ0pIdXpWOHQ2TEJsanlLd2F0enJNWjQzQjhnbDh1bDJUNHlJUHFmV3ByUzNMbnwzNDU4NzY0NTQwMTQ1MDUxNzU0fDI=?share_link_id=135897382331)
+
+## Pedro Henrique do Prado Paiva GEC 1685
