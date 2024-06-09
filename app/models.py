@@ -1,18 +1,12 @@
 from app import mongo
+from bson.objectid import ObjectId
 
 class Player:
-    def __init__(self, name, position, number):
+    def __init__(self, name, position, number, equipment=None):
         self.name = name
         self.position = position
         self.number = number
-        self.equipment = []
-
-    def add_equipment(self, equipment):
-        self.equipment.append(equipment)
-
-    def remove_equipment(self, equipment):
-        if equipment in self.equipment:
-            self.equipment.remove(equipment)
+        self.equipment = equipment
 
     def save(self):
         mongo.db.players.insert_one({
@@ -21,6 +15,22 @@ class Player:
             'number': self.number,
             'equipment': self.equipment
         })
+
+    @staticmethod
+    def update_player(player_id, name, position, number, equipment):
+        mongo.db.players.update_one(
+            {'_id': ObjectId(player_id)},
+            {'$set': {
+                'name': name,
+                'position': position,
+                'number': number,
+                'equipment': equipment
+            }}
+        )
+
+    @staticmethod
+    def find_player_by_id(player_id):
+        return mongo.db.players.find_one_or_404({'_id': ObjectId(player_id)})
 
 class Equipment:
     def __init__(self, name, quantity):

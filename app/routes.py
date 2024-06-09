@@ -13,6 +13,12 @@ def index():
 @main.route('/players', methods=['GET'])
 def get_players():
     players = list(mongo.db.players.find())
+    equipment = {str(item['_id']): item['name'] for item in mongo.db.equipment.find()}
+
+    for player in players:
+        player_equipment_id = str(player.get('equipment', ''))
+        player['equipment_name'] = equipment.get(player_equipment_id, 'Unknown')
+
     return render_template('players.html', players=players)
 
 @main.route('/players/add', methods=['GET', 'POST'])
@@ -29,24 +35,16 @@ def add_player():
 @main.route('/edit_player/<player_id>', methods=['GET', 'POST'])
 def edit_player(player_id):
     if request.method == 'GET':
-        player = mongo.db.players.find_one_or_404({'_id': ObjectId(player_id)})
+        player = Player.find_player_by_id(player_id)
         equipment = list(mongo.db.equipment.find())
         return render_template('edit_player.html', player=player, equipment=equipment)
     elif request.method == 'POST':
         name = request.form['name']
         position = request.form['position']
         number = request.form['number']
-        equipment = request.form.getlist('equipment[]')
-        
-        mongo.db.players.update_one(
-            {'_id': ObjectId(player_id)},
-            {'$set': {
-                'name': name,
-                'position': position,
-                'number': number,
-                'equipment': equipment
-            }}
-        )
+        equipment = request.form['equipment']
+
+        Player.update_player(player_id, name, position, number, equipment)
         return redirect(url_for('main.get_players'))
 
 @main.route('/players/delete/<string:player_id>', methods=['POST'])
