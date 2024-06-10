@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 {% block content %}
 <h1>Staff Members</h1>
-<a class="btn btn-primary" href="/add_staff">Add Staff Member</a>
-<a class="btn btn-secondary" href="/">Back to Home</a>
+<a class="btn btn-primary" href="{{ url_for('main.add_staff') }}">Add Staff Member</a>
+<a class="btn btn-secondary" href="{{ url_for('main.index') }}">Back to Home</a>
 <table class="table table-striped">
     <thead>
         <tr>
