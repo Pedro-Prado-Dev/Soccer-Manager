@@ -26,11 +26,15 @@ def add_player():
     if request.method == 'POST':
         name = request.form['name']
         position = request.form['position']
-        number = int(request.form['number'])
-        player = Player(name, position, number)
-        player.save()
+        number = request.form['number']
+        equipment = request.form['equipment']
+
+        new_player = Player(name=name, position=position, number=number, equipment=equipment)
+        new_player.save()
         return redirect(url_for('main.get_players'))
-    return render_template('add_player.html')
+    else:
+        equipment = list(mongo.db.equipment.find())
+        return render_template('add_player.html', equipment=equipment)
 
 @main.route('/edit_player/<player_id>', methods=['GET', 'POST'])
 def edit_player(player_id):

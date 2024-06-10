@@ -4,15 +4,24 @@
 <form action="/players/add" method="post">
     <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" class="form-control" id="name" name="name">
+        <input type="text" class="form-control" id="name" name="name" required>
     </div>
     <div class="form-group">
         <label for="position">Position:</label>
-        <input type="text" class="form-control" id="position" name="position">
+        <input type="text" class="form-control" id="position" name="position" required>
     </div>
     <div class="form-group">
         <label for="number">Number:</label>
-        <input type="text" class="form-control" id="number" name="number">
+        <input type="text" class="form-control" id="number" name="number" required>
+    </div>
+    <div class="form-group">
+        <label for="equipment">Select Equipment:</label>
+        <select id="equipment" name="equipment" class="form-control" required>
+            <option value="">-- Select Equipment --</option>
+            {% for item in equipment %}
+                <option value="{{ item._id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
     </div>
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
